@@ -1,9 +1,12 @@
 package consulting.convex.hexagonal.adapter.db;
 
+import consulting.convex.hexagonal.adapter.db.entity.MovieEntity;
 import consulting.convex.hexagonal.adapter.db.mapper.DatabaseMapper;
+import consulting.convex.hexagonal.domain.exception.CinemaException;
 import consulting.convex.hexagonal.domain.model.Movie;
 import consulting.convex.hexagonal.domain.port.MovieRepositoryPort;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,5 +39,20 @@ public class MovieRepository implements MovieRepositoryPort {
   @Override
   public Movie save(Movie movie) {
     return databaseMapper.toMovie(repository.save(databaseMapper.toEntity(movie)));
+  }
+
+  @Override
+  public Movie getById(Long movieId) {
+    final Optional<MovieEntity> foundMovie = repository.findById(movieId);
+    if (foundMovie.isPresent()) {
+      return databaseMapper.toMovie(foundMovie.get());
+    } else {
+      throw new CinemaException(String.format("Movie with id %s not found.", movieId));
+    }
+  }
+
+  @Override
+  public void deleteById(Long movieId) {
+    repository.deleteById(movieId);
   }
 }

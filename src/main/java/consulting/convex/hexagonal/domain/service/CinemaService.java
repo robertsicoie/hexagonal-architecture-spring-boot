@@ -23,4 +23,14 @@ public class CinemaService {
   public List<Movie> getByYear(Integer year) {
     return movieRepository.getByYear(year);
   }
+
+  public Movie rate(Long movieId, Integer rating) {
+    final Movie movie = movieRepository.getById(movieId);
+    movie.setRate(movie.getRate() + rating);
+    return movieRepository.save(movie);
+  }
+
+  public void removeMovie(Long movieId) {
+    movieRepository.deleteById(movieId);
+  }
 }

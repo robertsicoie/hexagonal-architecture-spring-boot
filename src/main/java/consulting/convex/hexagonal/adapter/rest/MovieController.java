@@ -6,11 +6,13 @@ import consulting.convex.hexagonal.domain.model.Movie;
 import consulting.convex.hexagonal.domain.service.CinemaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,5 +39,15 @@ public class MovieController {
   public Movie addMovie(@RequestBody AddMovieCommand addCommand) {
     Movie movie = restMapper.toMovie(addCommand);
     return cinemaService.add(movie);
+  }
+
+  @PostMapping("/{movieId}/ratings/{rating}")
+  public Movie rate(@RequestParam Long movieId, @RequestParam Integer rating) {
+    return cinemaService.rate(movieId, rating);
+  }
+
+  @DeleteMapping("/{movieId}")
+  public void removeMovie(@PathVariable Long movieId) {
+    cinemaService.removeMovie(movieId);
   }
 }

@@ -10,4 +10,8 @@ public interface MovieRepositoryPort {
   List<Movie> getAll();
 
   Movie save(Movie movie);
+
+  Movie getById(Long movieId);
+
+  void deleteById(Long movieId);
 }
