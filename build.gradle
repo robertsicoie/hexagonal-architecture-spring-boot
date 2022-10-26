@@ -2,15 +2,18 @@
 buildscript {
 	repositories {
 		mavenCentral()
+		gradlePluginPortal()
 	}
 	dependencies {
 		classpath 'org.owasp:dependency-check-gradle:7.2.1'
+		classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.1'
 	}
 }
 
 plugins {
 	id 'org.springframework.boot' version '2.7.4'
 	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+	id 'com.google.protobuf' version '0.9.1'
 	id 'java'
 
 	id 'jacoco'
@@ -34,6 +37,13 @@ repositories {
 
 		implementation group: 'org.hsqldb', name:'hsqldb', version: '2.7.0'
 
+		runtimeOnly 'io.grpc:grpc-netty-shaded:1.50.2'
+		implementation 'io.grpc:grpc-protobuf:1.50.2'
+		implementation 'io.grpc:grpc-stub:1.50.2'
+		compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+
+		implementation group: 'net.devh', name: 'grpc-server-spring-boot-starter', version: '2.13.1.RELEASE'
+
 		implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.3.Final'
 		annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.3.Final'
 
@@ -42,7 +52,6 @@ repositories {
 		testImplementation 'com.tngtech.archunit:archunit-junit5:1.0.0'
 	}
 }
-
 
 tasks.named('test') {
 	useJUnitPlatform()
@@ -69,6 +78,13 @@ jacoco {
 }
 
 jacocoTestCoverageVerification {
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'consulting/convex/hexagonal/adapter/grpc/generated/*'
+			])
+		}))
+	}
 	violationRules {
 		rule {
 			limit {
@@ -114,10 +130,34 @@ apply plugin: 'org.owasp.dependencycheck'
 spotbugsTest {
 	enabled = false;
 }
+
 apply plugin: "com.github.spotbugs"
 
 // custom
 task staticAnalysis {
 	dependsOn 'spotbugsMain'
 	dependsOn 'dependencyCheckAnalyze'
+}
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.21.7"
+	}
+	plugins {
+		grpc {
+			artifact = 'io.grpc:protoc-gen-grpc-java:1.50.2'
+		}
+	}
+	generateProtoTasks {
+		all()*.plugins {
+			grpc {}
+		}
+	}
+	sourceSets {
+		main {
+			resources {
+				srcDirs("build/generated/source/proto")
+			}
+		}
+	}
 }

@@ -1,0 +1,36 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package consulting.convex.hexagonal.adapter.grpc.generated;
+
+message MovieAddRequest {
+  string title = 1;
+  string description = 2;
+  int32 year = 3;
+}
+
+message MovieRateRequest {
+  int32 id = 1;
+  int32 rate = 2;
+}
+
+message MovieResponse {
+  int32 id = 1;
+  string title = 2;
+  string description = 3;
+  int32 year = 4;
+  int32 rating = 5;
+}
+
+message MoviesQuery {
+  optional int32 id = 1;
+  optional string title = 2;
+  optional string description = 3;
+  optional int32 year = 4;
+  optional int32 rating = 5;
+}
+
+service CinemaService {
+  rpc getMovies(MoviesQuery) returns (stream MovieResponse);
+  rpc add(MovieAddRequest) returns (MovieResponse);
+  rpc rate(MovieRateRequest) returns (MovieResponse);
+}

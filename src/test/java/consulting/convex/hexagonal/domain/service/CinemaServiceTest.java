@@ -5,25 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import consulting.convex.hexagonal.domain.model.Movie;
 import consulting.convex.hexagonal.domain.port.MovieRepositoryPort;
-import consulting.convex.hexagonal.domain.service.CinemaServiceTest.CinemaServiceConfiguration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest(classes = CinemaServiceConfiguration.class)
+@ExtendWith(SpringExtension.class)
 public class CinemaServiceTest {
 
   @TestConfiguration
   static class CinemaServiceConfiguration {
 
-    @Primary
     @Bean
     public MovieRepositoryPort testMovieRepository() {
       return new MovieRepositoryPort() {
@@ -65,13 +63,18 @@ public class CinemaServiceTest {
         }
       };
     }
+
+    @Bean
+    public CinemaService cinemaService() {
+      return new CinemaService();
+    }
   }
 
   @Autowired
   private CinemaService cinemaService;
 
   @Test
-  public void shouldRate() {
+  void shouldRate() {
     assertNotNull(cinemaService.getAllMovies());
     assertEquals(1, cinemaService.getAllMovies().size());
 

@@ -25,7 +25,8 @@ public class ArchitectureTest {
       .domainServices("..domain.service..", "..domain.port..")
       .applicationServices("..application..")
       .adapter("rest", "..adapter.rest..")
-      .adapter("db", "..adapter.db..");
+      .adapter("db", "..adapter.db..")
+      .adapter("grpc", "..adapter.grpc..");
 
   @ArchTest
   static final ArchRule no_access_to_upper_packages = NO_CLASSES_SHOULD_DEPEND_UPPER_PACKAGES;

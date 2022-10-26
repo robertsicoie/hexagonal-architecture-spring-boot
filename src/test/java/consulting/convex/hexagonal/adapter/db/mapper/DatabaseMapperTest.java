@@ -3,22 +3,21 @@ package consulting.convex.hexagonal.adapter.db.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import consulting.convex.hexagonal.adapter.TestData;
 import consulting.convex.hexagonal.adapter.db.entity.MovieEntity;
 import consulting.convex.hexagonal.domain.model.Movie;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class DatabaseMapperTest {
 
-  @Autowired
-  DatabaseMapper databaseMapper;
+  private final DatabaseMapper databaseMapper = new DatabaseMapperImpl();
 
   @Test
   void shouldMapToMovie() {
-    final MovieEntity movieEntity = TestData.YEAR_1999_FIGHT_CLUB;
+    final MovieEntity movieEntity = MovieEntity.builder().id(1)
+        .title("Fight Club")
+        .description("An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.")
+        .year(1999)
+        .build();
 
     final Movie movie = databaseMapper.toMovie(movieEntity);
 

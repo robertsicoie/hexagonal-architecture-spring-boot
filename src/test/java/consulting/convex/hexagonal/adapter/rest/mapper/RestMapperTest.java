@@ -6,14 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import consulting.convex.hexagonal.adapter.rest.command.AddMovieCommand;
 import consulting.convex.hexagonal.domain.model.Movie;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class RestMapperTest {
 
-  @Autowired
-  private RestMapper restMapper;
+  private final RestMapper restMapper = new RestMapperImpl();
 
   @Test
   void shouldMapToMovie() {
